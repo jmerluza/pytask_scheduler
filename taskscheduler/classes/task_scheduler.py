@@ -1,4 +1,5 @@
 import win32com.client
+from taskscheduler.classes import NewTask
 
 class TaskScheduler:
     def __init__(self):
@@ -17,18 +18,31 @@ class TaskScheduler:
                 return fpath
         return None
 
-    def get_folder(self, folder_name: str):
-        """Get the folder com object based on folder name.
+    def get_folder(self, folder_name: str|None=None):
+        """Get the folder object.
         
         Parameters:
             folder_name (`str`): Folder name to look for.
 
         Returns:
-            task scheduler folder com object.
+            TaskFolder object.
         """
-        folder_path = self.__find_folder(self.root_folder, folder_name)
-        if folder_path:
-            folder = self.client.GetFolder(folder_path)
-            return folder
+
+        if folder_name is None:
+            return self.root_folder
         else:
-            raise ValueError(f"Could not find {folder_name}")
+            folder_path = self.__find_folder(self.root_folder, folder_name)
+            if folder_path:
+                folder = self.client.GetFolder(folder_path)
+                return folder
+            else:
+                raise ValueError(f"Could not find {folder_name}")
+    
+    def create_task(
+        self,
+        folder_name: str,
+        task_name: str
+    ):
+        folder = self.get_folder(folder_name)
+        new_taskdef = self.client.NewTask(0)
+        return NewTask(new_taskdef)
