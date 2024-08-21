@@ -1,5 +1,7 @@
+from typing import Literal
+from datetime import datetime
 import win32com.client
-from py_taskscheduler.objects import NewTask
+from pytask_scheduler.objects import NewTask
 
 class TaskScheduler:
     def __init__(self):
@@ -41,8 +43,40 @@ class TaskScheduler:
     def create_task(
         self,
         folder_name: str,
-        task_name: str
+        trigger_type: Literal["daily","weekly","monthly","monthlydow","one-time"],
+        start_date: datetime.date,
+        start_time: datetime.time,
+        days_interval: int,
+        weeks_interval: int,
+        days_of_week: int, 
+        days_of_month: int,
+        months_of_year: int,
+        weeks_of_month: int,
+        task_description: str,
+        allow_demand_start: bool,
+        start_when_available: bool,
+        enabled: bool,
+        hidden: bool,
+        restart_interval: str,
+        restart_count: int,
+        execution_time_limit: str,
+        multiple_instances: int
+        
     ):
+        """
+        Creates a new task in a folder.
+        1. Create task definition.
+        2. Create task trigger.
+        3. Create task action.
+        4. Update task information
+        """
         folder = self.get_folder(folder_name)
+
+        # create task def
         new_taskdef = self.client.NewTask(0)
+
+        # create task trigger
+        
+
+
         return NewTask(new_taskdef)

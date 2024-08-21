@@ -28,10 +28,10 @@ class TaskSettings:
         start_when_available: bool,
         enabled: bool,
         hidden: bool,
-        restart_interval: bool,
-        restart_count: bool,
-        execution_time_limit: bool,
-        multiple_instances: bool
+        restart_interval: str,
+        restart_count: int,
+        execution_time_limit: str,
+        multiple_instances: int
     ):
         """
         Updates the settings of a task.
@@ -54,18 +54,18 @@ class TaskSettings:
                 the UI. However, admins can override this setting through the use of a \
                 'master switch' that makes all tasks visible in the UI.
 
-            restart_interval (`bool`):
+            restart_interval (`str`):
                 Gets or sets a value that specifies how long the task scheduler will \
                 attempt to restart the task.
 
-            restart_count (`bool`): 
+            restart_count (`int`): 
                 Gets or sets the number of times that the task scheduler \
                 will attempt to restart the task.
 
-            execution_time_limit (`bool`): 
+            execution_time_limit (`str`): 
                 Gets or sets the amount of time allowed to complete the task.
 
-            multiple_instances (`bool`): 
+            multiple_instances (`int`): 
                 Gets or sets the policy that defines how the task scheduler deals with \
                 multiple instances of the task. 
         

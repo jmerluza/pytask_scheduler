@@ -3,7 +3,7 @@ https://learn.microsoft.com/en-us/windows/win32/taskschd/trigger
 """
 from typing import Literal
 from datetime import datetime
-from py_taskscheduler import TaskTriggerTypes
+from pytask_scheduler import TaskTriggerTypes
 
 class TaskTrigger:
     def __init__(self, taskdef_obj):
@@ -85,4 +85,29 @@ class TaskTrigger:
             The `dow` trigger type can start a task every first Thursday of specific months.
         
         """
-        pass
+        self.__set_start_boundary(start_date, start_time)
+        match trigger_type:
+            case "month":
+                self.__set_cadence(TaskTriggerTypes.TASK_TRIGGER_MONTHLY)
+                self.trigger.DaysOfMonth = days_of_month
+                self.trigger.MonthsOfYear = months_of_year
+            case "dow":
+                self.__set_cadence(TaskTriggerTypes.TASK_TRIGGER_MONTHLYDOW)
+                self.trigger.DaysOfWeek = days_of_week
+                self.trigger.MonthsOfYear = months_of_year
+                self.trigger.WeeksOfMonth = weeks_of_month
+
+    def create_one_time_trigger(
+        self,
+        start_date: datetime.date,
+        start_time: datetime.time
+    ):
+        """Starts a task at as specific date and time.
+        https://learn.microsoft.com/en-us/windows/win32/taskschd/timetrigger
+
+        Parameters:
+            start_date (`datetime.date`): Date when the trigger is activated.
+            start_time (`datetime.time`): Time when the trigger is activated.
+        """
+        self.__set_cadence(TaskTriggerTypes.TASK_TRIGGER_TIME)
+        self.__set_start_boundary(start_date, start_time)

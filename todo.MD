@@ -3,25 +3,27 @@
     - [] create task triggers.
         - implement all task triggers and required set up for each trigger.
         ## Daily
-            - [] Start boundary (start_date, start_time)
-            - [] days interval
+            - [x] Start boundary (start_date, start_time)
+            - [x] days interval
 
         ## Weekly
-            - [] Start boundary (start_date, start_time)
-            - [] WeeksInterval 
-            - [] Day of week
+            - [x] Start boundary (start_date, start_time)
+            - [x] WeeksInterval 
+            - [x] Day of week
 
         ## Monthly and Monthly DOW
-            - [] Start boundary (start_date, start_time)
-            - [] Months of year
+            - [x] Start boundary (start_date, start_time)
+            - [x] Months of year
             
             then user can choose between these two options for the task to run:
 
-            - [] days of the month
-            - [] on iteration
-            - [] day of the week
+            - [x] days of the month
+            - [x] on iteration
+            - [x] day of the week
 
         ## One time
-        ## When the computer starts
-        ## when I log on
-        ## When a specific event is logged
+            - [x] start boundary (start_date, start_time)
+
+        ## Set up create task function
+            - [] set up function
+            - [] update docstring
