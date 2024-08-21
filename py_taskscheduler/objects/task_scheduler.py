@@ -1,5 +1,5 @@
 import win32com.client
-from taskscheduler.classes import NewTask
+from py_taskscheduler.objects import NewTask
 
 class TaskScheduler:
     def __init__(self):
