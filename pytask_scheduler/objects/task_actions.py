@@ -30,6 +30,7 @@ class TaskAction:
         self.action.Path = filepath
         self.action.Arguments = argument
         self.action.WorkingDirectory = working_dir
+        return self.action
 
     def create_com_handler_action(self):
         """Creates an action that fires a handler.
@@ -41,10 +42,10 @@ class TaskAction:
         """Creates an action that send an email message.
         https://learn.microsoft.com/en-us/windows/win32/taskschd/emailaction
         """
-        raise NotImplementedError("Create com handle action has not been implemented")
+        raise NotImplementedError("Create send email action has not been implemented")
 
     def create_show_message_action(self):
         """Creates an action that shows a message box when a task is activated.
         https://learn.microsoft.com/en-us/windows/win32/taskschd/showmessageaction
         """
-        raise NotImplementedError("Create com handle action has not been implemented")
+        raise NotImplementedError("Create show message action has not been implemented")

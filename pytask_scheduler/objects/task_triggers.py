@@ -34,6 +34,7 @@ class TaskTrigger:
         self.__set_cadence(TaskTriggerTypes.TASK_TRIGGER_DAILY)
         self.__set_start_boundary(start_date, start_time)
         self.trigger.DaysInterval = days_interval
+        return self.trigger
 
     def create_weekly_trigger(
         self,
@@ -57,6 +58,7 @@ class TaskTrigger:
         self.__set_start_boundary(start_date, start_time)
         self.trigger.WeeksInterval = weeks_interval
         self.trigger.DaysOfWeek = days_of_week
+        return self.trigger
 
     def create_monthly_trigger(
         self,
@@ -96,6 +98,7 @@ class TaskTrigger:
                 self.trigger.DaysOfWeek = days_of_week
                 self.trigger.MonthsOfYear = months_of_year
                 self.trigger.WeeksOfMonth = weeks_of_month
+        return self.trigger
 
     def create_one_time_trigger(
         self,
@@ -111,3 +114,4 @@ class TaskTrigger:
         """
         self.__set_cadence(TaskTriggerTypes.TASK_TRIGGER_TIME)
         self.__set_start_boundary(start_date, start_time)
+        return self.trigger

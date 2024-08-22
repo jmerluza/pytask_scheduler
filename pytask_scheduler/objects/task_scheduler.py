@@ -1,7 +1,7 @@
 from typing import Literal
 from datetime import datetime
 import win32com.client
-from pytask_scheduler.objects import NewTask
+from pytask_scheduler.objects import NewTask, TaskTrigger, TaskAction
 
 class TaskScheduler:
     def __init__(self):
@@ -52,6 +52,11 @@ class TaskScheduler:
         days_of_month: int,
         months_of_year: int,
         weeks_of_month: int,
+        action_type: Literal["exec","com-handler","email","show-message"],
+        action_arg: str,
+        action_file: str,
+        action_working_dir: str,
+        task_name: str,
         task_description: str,
         allow_demand_start: bool,
         start_when_available: bool,
@@ -68,15 +73,76 @@ class TaskScheduler:
         1. Create task definition.
         2. Create task trigger.
         3. Create task action.
-        4. Update task information
+        4. Update task information.
+        5. Update task settings.
         """
         folder = self.get_folder(folder_name)
 
-        # create task def
+        # create task def.
         new_taskdef = self.client.NewTask(0)
 
-        # create task trigger
+        # create new trigger.
+        match trigger_type:
+            case "daily":
+                new_trigger = TaskTrigger(new_taskdef).create_daily_trigger(
+                    start_date=start_date,
+                    start_time=start_time,
+                    days_interval=days_interval
+                )
+
+            case "weekly":
+                new_trigger = TaskTrigger(new_taskdef).create_weekly_trigger(
+                    start_date=start_date,
+                    start_time=start_time,
+                    weeks_interval=weeks_interval,
+                    days_of_week=days_of_week
+                )
+
+            case "monthly":
+                new_trigger = TaskTrigger(new_taskdef).create_monthly_trigger(
+                    trigger_type="month",
+                    start_date=start_date,
+                    start_time=start_time,
+                    days_of_month=days_of_month,
+                    days_of_week=days_of_week,
+                    months_of_year=months_of_year,
+                    weeks_of_month=weeks_of_month
+                )
+
+            case "monthlydow":
+                new_trigger = TaskTrigger(new_taskdef).create_monthly_trigger(
+                    trigger_type="dow",
+                    start_date=start_date,
+                    start_time=start_time,
+                    days_of_month=days_of_month,
+                    days_of_week=days_of_week,
+                    months_of_year=months_of_year,
+                    weeks_of_month=weeks_of_month
+                )
+
+            case "one-time":
+                new_trigger = TaskTrigger(new_taskdef).create_one_time_trigger(
+                    start_date=start_date,
+                    start_time=start_time
+                )
+
+        # create a new task action
+        match action_type:
+            case "exec":
+                new_action = TaskAction(new_taskdef).create_execution_action(
+                    argument=action_arg,
+                    filepath=action_file,
+                    working_dir=action_working_dir
+                )
+            case "com-handler":
+                raise NotImplementedError("Create com handler action has not been implemented")
+            case "email":
+                raise NotImplementedError("Create send email action has not been implemented")
+            case "show-message":
+                raise NotImplementedError("Create show message action has not been implemented")
         
+        # update task information
+        new_taskdef.Name = task_name
 
 
         return NewTask(new_taskdef)
