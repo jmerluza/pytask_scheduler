@@ -1,11 +1,15 @@
 from pytask_scheduler.constants import (
     TaskTriggerTypes,
     MonthlyTriggerValues,
-    TaskActionTypes
+    TaskActionTypes,
+    TaskLogonTypes,
+    TaskCreationTypes
 )
 
 __all__ = [
     "TaskTriggerTypes",
     "MonthlyTriggerValues",
-    "TaskActionTypes"
+    "TaskActionTypes",
+    "TaskLogonTypes",
+    "TaskCreationTypes"
 ]

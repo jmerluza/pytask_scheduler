@@ -1,6 +1,6 @@
 # To do list
-- [] new task feature.
-    - [] create task triggers.
+- [x] new task feature.
+    - [x] create task triggers.
         - implement all task triggers and required set up for each trigger.
         ## Daily
             - [x] Start boundary (start_date, start_time)
@@ -25,5 +25,8 @@
             - [x] start boundary (start_date, start_time)
 
         ## Set up create task function
-            - [] set up function
+            - [x] set up function
             - [] update docstring
+
+- [] Display all tasks
+- [] Task statistics

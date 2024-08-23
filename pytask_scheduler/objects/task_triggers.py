@@ -7,7 +7,8 @@ from pytask_scheduler import TaskTriggerTypes
 
 class TaskTrigger:
     def __init__(self, taskdef_obj):
-        self.trigger = taskdef_obj.Triggers
+        self.taskdef = taskdef_obj
+        self.trigger = self.taskdef.Triggers
 
     def __set_start_boundary(self, start_date: datetime.date, start_time: datetime.time):
         self.trigger.StartBoundary = datetime.combine(start_date, start_time).isoformat()
@@ -34,7 +35,7 @@ class TaskTrigger:
         self.__set_cadence(TaskTriggerTypes.TASK_TRIGGER_DAILY)
         self.__set_start_boundary(start_date, start_time)
         self.trigger.DaysInterval = days_interval
-        return self.trigger
+        return self.taskdef
 
     def create_weekly_trigger(
         self,
@@ -58,7 +59,7 @@ class TaskTrigger:
         self.__set_start_boundary(start_date, start_time)
         self.trigger.WeeksInterval = weeks_interval
         self.trigger.DaysOfWeek = days_of_week
-        return self.trigger
+        return self.taskdef
 
     def create_monthly_trigger(
         self,
@@ -98,7 +99,7 @@ class TaskTrigger:
                 self.trigger.DaysOfWeek = days_of_week
                 self.trigger.MonthsOfYear = months_of_year
                 self.trigger.WeeksOfMonth = weeks_of_month
-        return self.trigger
+        return self.taskdef
 
     def create_one_time_trigger(
         self,
@@ -114,4 +115,4 @@ class TaskTrigger:
         """
         self.__set_cadence(TaskTriggerTypes.TASK_TRIGGER_TIME)
         self.__set_start_boundary(start_date, start_time)
-        return self.trigger
+        return self.taskdef
