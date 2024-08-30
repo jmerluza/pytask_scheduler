@@ -28,5 +28,6 @@
             - [x] set up function
             - [] update docstring
 
-- [] Display all tasks
-- [] Task statistics
+- [x] Display all tasks
+- [x] Task statistics
+- [] Get task history

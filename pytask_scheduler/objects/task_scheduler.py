@@ -1,14 +1,16 @@
 from typing import Literal
 from datetime import datetime
+import polars as pl
 import win32com.client
-from pytask_scheduler.objects import NewTask, TaskTrigger, TaskAction
-from pytask_scheduler.constants import TaskCreationTypes, TaskLogonTypes
+from pytask_scheduler.objects import NewTask, TaskTrigger, TaskAction, TaskFolder
+from pytask_scheduler.frames import TaskFrame
 
 class TaskScheduler:
     def __init__(self):
         self.client = win32com.client.gencache.EnsureDispatch("Schedule.Service")
         self.client.Connect()
         self.root_folder = self.client.GetFolder("\\")
+        self.folders = [f.Name for f in self.root_folder.GetFolders(0)]
 
     def __find_folder(self, folder, folder_name: str) -> str:
         """Find and return the folder path from task scheduler."""
@@ -32,63 +34,40 @@ class TaskScheduler:
         """
 
         if folder_name is None:
-            return self.root_folder
+            return TaskFolder(self.root_folder)
         else:
             folder_path = self.__find_folder(self.root_folder, folder_name)
             if folder_path:
                 folder = self.client.GetFolder(folder_path)
-                return folder
+                return TaskFolder(folder)
             else:
                 raise ValueError(f"Could not find {folder_name}")
-            
-    # def list_scheduled_tasks_in_folder(folder, folder_name, tasks_list):
-    #     tasks = folder.GetTasks(0)
-    #     for i in range(tasks.Count):
-    #         task = tasks.Item(i + 1)
-    #         tasks_list.append({
-    #             "folder_name": folder_name,
-    #             "name": task.Name,
-    #             "state": task.State,
-    #             "next_run_time": task.NextRunTime,
-    #             "last_run_time": task.LastRunTime,
-    #             "last_task_result": task.LastTaskResult,
-    #             "missed_runs": task.NumberOfMissedRuns,
-    #             "author": task.Definition.RegistrationInfo.Author,
-    #             "created_date": task.Definition.RegistrationInfo.Date,
-    #             "description": task.Definition.RegistrationInfo.Description,
-    #             "path": task.Path,
-    #             "source": task.Definition.RegistrationInfo.Source
-    #         })
 
-    #     # Recursively list tasks in subfolders
-    #     subfolders = folder.GetFolders(0)
-    #     for i in range(subfolders.Count):
-    #         subfolder = subfolders.Item(i + 1)
-    #         list_scheduled_tasks_in_folder(subfolder, folder_name + "\\" + subfolder.Name, tasks_list)
+    def __list_tasks_info_in_folder(self, folder, folder_name: str, tasks_info_list: list):
+        """Recursively list all tasks within folders."""
 
-    # def get_all_scheduled_tasks():
-    #     scheduler = connect_to_task_scheduler()
-    #     root_folder = scheduler.GetFolder("\\")
-    #     tasks_list = []
-    #     list_scheduled_tasks_in_folder(root_folder, "\\", tasks_list)
-    #     return tasks_list
+        # extract and append all the tasks info in the list.
+        tasks = folder.tasks
+        for t in tasks:
+            tasks_info_list.append(folder.get_task(t).info())
 
-    # def get_tasks() -> TaskFrame:
-    #     """Get the tasks from the folder name"""
-    #     tasks_list = get_all_scheduled_tasks()
-    #     df = pl.DataFrame(tasks_list)
+        # walk through all subfolders and get the tasks info.
+        subfolders = folder.subfolders
+        for sf in subfolders:
+            subfolder = self.get_folder(sf)
+            self.__list_tasks_info_in_folder(
+                subfolder,
+                folder_name + "\\" + sf,
+                tasks_info_list
+            )
 
-    #     if df.is_empty():
-    #         return TaskFrame(df)
-
-    #     else:
-    #         df = (pl.DataFrame(tasks_list)
-    #             .with_columns(
-    #                 pl.col("state").replace(TASK_STATES).name.keep(),
-    #                 pl.col("last_task_result").replace(TASK_RESULTS).name.keep()
-    #             )
-    #         )
-    #         return TaskFrame(df)
+    def get_all_tasks(self) -> pl.DataFrame:
+        """Method for extracting all the scheduled tasks."""
+        root_folder = self.get_folder()
+        tasks_info_list = []
+        self.__list_tasks_info_in_folder(root_folder, "\\", tasks_info_list)
+        df = pl.DataFrame(tasks_info_list)
+        return TaskFrame(df)
 
     def create_task(
         self,
@@ -230,14 +209,5 @@ class TaskScheduler:
         new_taskdef.Settings.ExecutionTimeLimit = execution_time_limit
         new_taskdef.Settings.MultipleInstances = multiple_instances
 
-        folder.RegisterTaskDefinition(
-            task_name,
-            new_taskdef,
-            TaskCreationTypes.TASK_CREATE_OR_UPDATE,
-            "", # no username
-            "", # no password
-            TaskLogonTypes.TASK_LOGON_NONE
-        )
-
-
+        folder.register_new_task(task_name,new_taskdef)
         return NewTask(new_taskdef)
