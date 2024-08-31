@@ -4,6 +4,7 @@ from pytask_scheduler.constants import (
     TaskActionTypes,
     TaskLogonTypes,
     TaskCreationTypes,
+    TaskValueDefinitions,
     EventIDs,
     EventLogType
 )
@@ -18,6 +19,7 @@ __all__ = [
     "TaskActionTypes",
     "TaskLogonTypes",
     "TaskCreationTypes",
+    "TaskValueDefinitions",
     "TaskScheduler",
     "TaskFrame",
     "EventIDs",
