@@ -31,3 +31,4 @@
 - [x] Display all tasks
 - [x] Task statistics
 - [x] Get task history
+- [] Testing
