@@ -3,12 +3,14 @@ from pytask_scheduler.constants import (
     MonthlyTriggerValues,
     TaskActionTypes,
     TaskLogonTypes,
-    TaskCreationTypes
+    TaskCreationTypes,
+    EventIDs,
+    EventLogType
 )
 
-from pytask_scheduler.objects import TaskScheduler
+from pytask_scheduler.objects import TaskScheduler, TaskFrame
 
-from pytask_scheduler.frames import TaskFrame
+from pytask_scheduler.functions import get_task_scheduler_history
 
 __all__ = [
     "TaskTriggerTypes",
@@ -17,5 +19,8 @@ __all__ = [
     "TaskLogonTypes",
     "TaskCreationTypes",
     "TaskScheduler",
-    "TaskFrame"
+    "TaskFrame",
+    "EventIDs",
+    "EventLogType",
+    "get_task_scheduler_history"
 ]

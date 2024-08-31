@@ -1,10 +1,10 @@
-from .objects import NewTask, TaskTrigger, TaskAction, TaskFolder
-from .task_scheduler import TaskScheduler
+from .objects import NewTask, TaskTrigger, TaskAction, TaskFolder, TaskScheduler, TaskFrame
 
 __all__ = [
     "NewTask",
     "TaskTrigger",
     "TaskAction",
     "TaskFolder",
-    "TaskScheduler"
+    "TaskScheduler",
+    "TaskFrame"
 ]

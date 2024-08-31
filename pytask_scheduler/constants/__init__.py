@@ -4,7 +4,9 @@ from .constants import (
     TaskActionTypes,
     TaskCreationTypes,
     TaskLogonTypes,
-    TaskValueDefinitions
+    TaskValueDefinitions,
+    EventIDs,
+    EventLogType
 )
 
 __all__ = [
@@ -13,5 +15,7 @@ __all__ = [
     "TaskActionTypes",
     "TaskCreationTypes",
     "TaskLogonTypes",
-    "TaskValueDefinitions"
+    "TaskValueDefinitions",
+    "EventIDs",
+    "EventLogType"
 ]

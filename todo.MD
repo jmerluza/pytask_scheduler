@@ -30,4 +30,4 @@
 
 - [x] Display all tasks
 - [x] Task statistics
-- [] Get task history
+- [x] Get task history

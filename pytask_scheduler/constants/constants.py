@@ -285,3 +285,180 @@ class TaskValueDefinitions:
         3:"READY",
         4:"RUNNING"
     }
+
+@dataclass
+class EventLogType:
+    """Task scheduler event level type descriptions.
+    https://learn.microsoft.com/en-us/windows/win32/eventlog/event-types
+    """
+    DESCRIPTIONS = {
+        2: "ERROR",
+        3: "WARNING",
+        4: "INFORMATION"
+    }
+
+@dataclass
+class EventIDs:
+    """Task scheduler event id descriptions.
+    https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-r2-and-2008/cc727168(v=ws.10)
+    """
+    ID100 = "Task Scheduler started the instance of the task."
+    ID101 = "Task Scheduler failed to start the task."
+    ID102 = "Task Scheduler successfully finished the instance of the task."
+    ID103 = "Task Scheduler failed to start the instance of the task."
+    ID104 = "Task Scheduler failed to log on. Ensure the credentials for the task are \
+        correctly specified."
+    ID105 = "Task Scheduler failed to impersonate instance of the task."
+    ID106 = "The task was registered by user."
+    ID107 = "Task Scheduler launched the instance of the task due to a time trigger."
+    ID108 = " Task Scehduler launched the instance of the task. The task was \
+        triggered by an event trigger."
+    ID109 = "Task Scheduler launched the instance of the task due to a registration trigger."
+    ID110 = "Task Scheduler launched the instance of the task."
+    ID111 = "Task Scheduler terminated the instance of the task due to exceeding the time \
+        allocated for execution, as configured in the task definition. Increase the configured \
+        task timr out or investigate exteranl reasons for the delay."
+    ID112 = "Task Scheduler could not start the task because the network was unavailable. \
+        Ensure the computer is connected to the required network as specified in the task. \
+        If the task does not require network presence, remove the network condition from the \
+        task registration."
+    ID113 = "The Task Scheduler registered the task, but not all the specified triggers will \
+        start the task. Ensure all the task triggers are valid."
+    ID114 = "Task Scheduler could not launch task as scheduled. The instance is started \
+        now as required by the configuration option to start the task when available, \
+        if the scheduled time is missed."
+    ID115 = "The Scheduler failed to roll back a transaction when updating or deleting a task."
+    ID116 = "Task Scheduler saved the configuration for the task, but the credentials used to run \
+        the task could not be stored. Ensure the credentials are valid and re-register the task."
+    ID117 = "Task Scheduler launched the instance of the task due to an idle condition,"
+    ID118 = "Task Scheduler launched the instance of the task due to system startup."
+    ID119 = "Task Scheduler launched the instance of the task due to user logon."
+    ID120 = "Task Scheduler launched the instance of the task due to user \
+        connecting to the console."
+    ID121 = "Task Scheduler launched the instance of the task due to user \
+        disconnecting from the console."
+    ID122 = "Task Scheduler launched the instance of the task due to the user \
+        remotely connecting."
+    ID123 = "Task Scheduler launched the instance of the task due to the user \
+        remotely disconnecting."
+    ID124 = "Task Scheduler launched the instance of the task due to the user \
+        locking the computer."
+    ID125 = "Task Scheduler launched the instance of the task due to the user \
+        unlocking the computer."
+    ID126 = "Task Scheduler failed to execute the task. Task Scheduler is \
+        attempting to restart the task."
+    ID127 = "Task Scheduler failed to execute the task due to a shutdown race condition. \
+        Task scheduler is attempting to restart the task."
+    ID128 = "Task Scheduler did not launch the task because the current time exceeds the \
+        configured task end time. Extend the end time boundary for the task if required."
+    ID129 = "Task Scheduler launched the instance of the task with process ID."
+    ID130 = "Task Scheduler service failed to start the task due to the service being busy."
+    ID140 = "The task was updated by the user."
+    ID141 = "The task was deleted by the user."
+    ID142 = "User disabled task."
+    ID145 = "Task Scheduler woke up the computer to run a task."
+    ID200 = "Task Scehduler launched the action of the task."
+    ID201 = "Task Scheduler successfully completed the task, instance and action."
+    ID202 = "Task Scheduler failed to complete the instance of the task with action."
+    ID203 = "Task Scheduler failed to launch action in the instance of the task."
+    ID204 = "Task Scehduler failed to retrieve the event triggering values for the task. \
+        The event will be ignored."
+    ID205 = "Task Scheduler failed to match the pattern of events for the task. \
+        The event will be ignored."
+    ID305 = "Task Scheduler did not send the task to task engine."
+    ID322 = "Task Scheduler did not launch the task because of the instance of the same task \
+        is already running."
+    ID323 = "Task Scheduler stopped the instance of the task in order to launch a new instance."
+    ID324 = "Task Scheduler queued the instance of the task and will launch as soon as the other \
+        instance is complete."
+    ID326 = "Task Scheduler did not launch the task because the computer is running on batteries. \
+        If launching the task on batteries is required, change the respective flag in the task \
+        configuration."
+    ID327 = "Task SCheduler stopped the instance of the task because the computer is \
+        switching to battery power."
+    ID328 = "Task Scheduler stopped the instance of the task because the computer \
+        is no longer idle."
+    ID329 = "Task Scheduler stopped the instance of the task because the task timed out."
+    ID330 = "Task Scheduler stopped the instance of the task as request by user."
+    ID331 = "Task Scheduler will continue to execute the instance of the task even after the \
+        designated timeout, due to a failure to create the timeout mechanism."
+    ID332 = "Task Scheduler did not launch the task because user was not logged on when \
+        the launching conditions were met. Ensure the user is logged on or change the task \
+        definition to allow the task to launch when the user is logged off."
+    ID400 = "The Task Scheduler service has started."
+    ID401 = "The Task Scheduler service failed to start due to an error in the instance."
+    ID402 = "The Task Scheduler service is shutting down."
+    ID403 = "The Task Scheduler service has encountered an error."
+    ID404 = "The Task Scheduler service has encountered an RPC initialization error."
+    ID405 = "The Task Scheduler service has failed to initialize COM."
+    ID406 = "The Task Scheduler service failed to initialize the credentials store."
+    ID409 = "The Task Scheduler service failed to initialize a time change notification. \
+        System time updates may not be picked by the service and \
+        task schedules may not be updated."
+    ID411 = "Task Scheduler service received a time system change notification."
+    ID412 = "Task Scheduler service failed to launch tasks triggered by computer startup."
+
+    DESCRIPTIONS = {
+        100:ID100,
+        101:ID101,
+        102:ID102,
+        103:ID103,
+        104:ID104,
+        105:ID105,
+        106:ID106,
+        107:ID107,
+        108:ID108,
+        109:ID109,
+        110:ID110,
+        111:ID111,
+        112:ID112,
+        113:ID113,
+        114:ID114,
+        115:ID115,
+        116:ID116,
+        117:ID117,
+        118:ID118,
+        119:ID119,
+        120:ID120,
+        121:ID121,
+        122:ID122,
+        123:ID123,
+        124:ID124,
+        125:ID125,
+        126:ID126,
+        127:ID127,
+        128:ID128,
+        129:ID129,
+        130:ID120,
+        140:ID140,
+        141:ID141,
+        142:ID142,
+        145:ID145,
+        200:ID200,
+        201:ID201,
+        202:ID202,
+        203:ID203,
+        204:ID204,
+        205:ID205,
+        305:ID305,
+        322:ID322,
+        323:ID323,
+        324:ID324,
+        326:ID326,
+        327:ID327,
+        328:ID328,
+        329:ID329,
+        330:ID330,
+        331:ID331,
+        332:ID332,
+        400:ID400,
+        401:ID401,
+        402:ID402,
+        403:ID403,
+        404:ID404,
+        405:ID405,
+        406:ID406,
+        409:ID409,
+        411:ID411,
+        412:ID412
+    }
