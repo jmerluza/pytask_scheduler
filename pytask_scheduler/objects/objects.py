@@ -42,7 +42,14 @@ class TaskFrame(pl.DataFrame):
         return self.df.filter(pl.col("task_state")==state).shape[0]
     
 class TaskScheduler:
-    """Task Scheduler object."""
+    """
+    Task Scheduler object.
+    
+    Attributes:
+        client (`CDispath`): The schedule.service com object from win32com.
+        root_folder: Root folder object.
+        folders (`list`): List of the subfolder names from the root folder.
+    """
     def __init__(self):
         self.client = win32com.client.gencache.EnsureDispatch("Schedule.Service")
         self.client.Connect()
