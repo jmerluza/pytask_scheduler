@@ -317,8 +317,8 @@ class TaskAction:
 
     def create_execution_action(
         self,
-        argument: str,
-        filepath: str|None="",
+        filepath: str,
+        argument: str|None="",
         working_dir: str|None=""
     ):
         """Creates an action that executes a command-line operation. For example, \
@@ -555,7 +555,7 @@ class TaskTrigger:
         start_date: datetime.date,
         start_time: datetime.time,
         weeks_interval: int,
-        days_of_week: int
+        days_of_week: list[int]
     ):
         """Starts a task based on a weekly schedule. For example, the task starts at 8:00 AM \
             on a specific day of the week every week or every other week.
@@ -567,6 +567,7 @@ class TaskTrigger:
             weeks_interval (`int`): Sets the interval between the weeks in the schedule. \
                 An interval of 1 produces a weekly schedule, an interval of 2 produces an \
                 every-other week schedule.
+            days_of_week: Sets the days on which the task will run.
         """
         self.__set_cadence(TaskTriggerTypes.TASK_TRIGGER_WEEKLY)
         self.__set_start_boundary(start_date, start_time)
@@ -579,9 +580,9 @@ class TaskTrigger:
         trigger_type: Literal["month","dow"],
         start_date: datetime.date,
         start_time: datetime.time,
-        days_of_month: int,
-        days_of_week: int,
-        months_of_year: int,
+        days_of_month: list[int],
+        days_of_week: list[int],
+        months_of_year: list[int],
         weeks_of_month: int
     ):
         """Starts a task based on a monthly schedule or a monthly day-of-week schedule.
