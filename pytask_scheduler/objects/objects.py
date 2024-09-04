@@ -271,6 +271,8 @@ class RegisteredTask:
         self.rtask = rtask_obj
         self.taskdef = self.rtask.Definition
         self.reg_info = self.taskdef.RegistrationInfo
+        self.task_actions = self.taskdef.Actions
+        self.task_settings = self.taskdef.Settings
 
     def info(self) -> dict:
         """Information on registered task."""
@@ -286,7 +288,18 @@ class RegisteredTask:
             "author":self.reg_info.Author,
             "registration_date":self.reg_info.Date,
             "task_description":self.reg_info.Description,
-            "task_source":self.reg_info.Source
+            "task_source":self.reg_info.Source,
+            "filepath":self.task_actions.Path,
+            "action_arguments":self.task_actions.Arguments,
+            "action_working_dir":self.task_actions.WorkingDirectory,
+            "AllowDemandStart": self.task_settings.AllowDemandStart,
+            "StartWhenAvailable": self.task_settings.StartWhenAvailable,
+            "Enabled": self.task_settings.Enabled,
+            "Hidden": self.task_settings.Hidden,
+            "RestartInterval": self.task_settings.RestartInterval,
+            "RestartCount": self.task_settings.RestartCount,
+            "ExecutionTimeLimit": self.task_settings.ExecutionTimeLimit,
+            "MultipleInstances": self.task_settings.MultipleInstances
         }
 
     def update_registration_info(self, task_description: str):
@@ -430,8 +443,7 @@ class TaskFolder:
             "", # no password
             TaskLogonTypes.TASK_LOGON_NONE
         )
-
-    
+ 
 class TaskSettings:
     """This object covers topics from the TaskSettings object.
         https://learn.microsoft.com/en-us/windows/win32/taskschd/tasksettings
@@ -440,21 +452,6 @@ class TaskSettings:
     def __init__(self, taskdef_obj):
         self.taskdef = taskdef_obj
         self.task_settings = self.taskdef.Settings
-
-    def info(self) -> dict:
-        """Get the settings of a task."""
-        settings = {
-            "AllowDemandStart": self.task_settings.AllowDemandStart,
-            "StartWhenAvailable": self.task_settings.StartWhenAvailable,
-            "Enabled": self.task_settings.Enabled,
-            "Hidden": self.task_settings.Hidden,
-            "RestartInterval": self.task_settings.RestartInterval,
-            "RestartCount": self.task_settings.RestartCount,
-            "ExecutionTimeLimit": self.task_settings.ExecutionTimeLimit,
-            "MultipleInstances": self.task_settings.MultipleInstances
-        }
-
-        return settings
 
     def update_settings(
         self,

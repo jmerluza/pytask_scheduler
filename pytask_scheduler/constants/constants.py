@@ -190,6 +190,12 @@ class TaskInstancePolicy:
     Sets the policy that defines how task scheduler deals with multiple instances of the task.
     https://learn.microsoft.com/en-us/windows/win32/taskschd/tasksettings-multipleinstances
     """
+    policies = {
+        "Parallel":0,
+        "Queue":1,
+        "Ignore New":2,
+        "Stop Existing Instance":3
+    }
     TASK_INSTANCES_PARALLEL = 0
     TASK_INSTANCES_QUEUE = 1
     TASK_INSTANCES_IGNORE_NEW = 2
