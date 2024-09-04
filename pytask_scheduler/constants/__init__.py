@@ -5,6 +5,9 @@ from .constants import (
     TaskCreationTypes,
     TaskLogonTypes,
     TaskValueDefinitions,
+    TaskRestartIntervals,
+    TaskExecutionLimit,
+    TaskInstancePolicy,
     EventIDs,
     EventLogType
 )
@@ -16,6 +19,9 @@ __all__ = [
     "TaskCreationTypes",
     "TaskLogonTypes",
     "TaskValueDefinitions",
+    "TaskRestartIntervals",
+    "TaskExecutionLimit",
+    "TaskInstancePolicy",
     "EventIDs",
     "EventLogType"
 ]
