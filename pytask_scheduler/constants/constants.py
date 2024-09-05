@@ -196,6 +196,14 @@ class TaskInstancePolicy:
         "Ignore New":2,
         "Stop Existing Instance":3
     }
+
+    definitions = {
+        0:"Run new task parallel to existing instance.",
+        1:"Queue new instance of the task.",
+        2:"Do not start a new instance.",
+        3:"Stops the existing instance and runs the new instance."
+    }
+
     TASK_INSTANCES_PARALLEL = 0
     TASK_INSTANCES_QUEUE = 1
     TASK_INSTANCES_IGNORE_NEW = 2

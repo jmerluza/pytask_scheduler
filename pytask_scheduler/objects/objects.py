@@ -269,9 +269,9 @@ class RegisteredTask:
     """
     def __init__(self, rtask_obj):
         self.rtask = rtask_obj
+        self.xml = rtask_obj.Xml
         self.taskdef = self.rtask.Definition
         self.reg_info = self.taskdef.RegistrationInfo
-        self.task_actions = self.taskdef.Actions
         self.task_settings = self.taskdef.Settings
 
     def info(self) -> dict:
@@ -289,9 +289,6 @@ class RegisteredTask:
             "registration_date":self.reg_info.Date,
             "task_description":self.reg_info.Description,
             "task_source":self.reg_info.Source,
-            "filepath":self.task_actions.Path,
-            "action_arguments":self.task_actions.Arguments,
-            "action_working_dir":self.task_actions.WorkingDirectory,
             "AllowDemandStart": self.task_settings.AllowDemandStart,
             "StartWhenAvailable": self.task_settings.StartWhenAvailable,
             "Enabled": self.task_settings.Enabled,
@@ -299,8 +296,21 @@ class RegisteredTask:
             "RestartInterval": self.task_settings.RestartInterval,
             "RestartCount": self.task_settings.RestartCount,
             "ExecutionTimeLimit": self.task_settings.ExecutionTimeLimit,
-            "MultipleInstances": self.task_settings.MultipleInstances
+            "MultipleInstances": self.task_settings.MultipleInstances,
+            "execution_path":self.__extract_action_execpath()
         }
+
+    def __extract_action_execpath(self):
+        """Gets the action file path from the tasks xml text."""
+        exepath = ""
+        import xml.etree.ElementTree as ET
+        root = ET.fromstring(self.xml)
+        for act in root.findall('{http://schemas.microsoft.com/windows/2004/02/mit/task}Actions'):
+            for exe in act.findall('{http://schemas.microsoft.com/windows/2004/02/mit/task}Exec'):
+                for command in exe.findall('{http://schemas.microsoft.com/windows/2004/02/mit/task}Command'):
+                    exepath = command.text
+
+        return exepath
 
     def update_registration_info(self, task_description: str):
         """Updates the registration info for a task.
