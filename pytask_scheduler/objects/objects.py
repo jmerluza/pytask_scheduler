@@ -6,7 +6,8 @@ from pytask_scheduler import (
     TaskActionTypes,
     TaskTriggerTypes,
     TaskCreationTypes,
-    TaskLogonTypes
+    TaskLogonTypes,
+    TaskValueDefinitions
 )
 
 class TasksDataFrame(pl.DataFrame):
@@ -14,6 +15,22 @@ class TasksDataFrame(pl.DataFrame):
     def __init__(self, data: pl.DataFrame):
         super().__init__(data)
         self.df = data
+
+    def preprocess(self):
+        """Preprocess the tasks data frame."""
+        df = self.df.with_columns(
+            pl.col("task_state")
+            .cast(str)
+            .replace(TaskValueDefinitions.TASK_STATE_DEFINITION)
+            .alias("task_state_definition"),
+            pl.col("last_task_result")
+            .cast(str)
+            .replace(TaskValueDefinitions.TASK_RESULT_DEFINITION)
+            .alias("last_task_result_definition"),
+            pl.col("next_run_time").cast(pl.Datetime),
+            pl.col("last_run_time").cast(pl.Datetime)
+        )
+        return TasksDataFrame(df)
 
     def stats(self) -> pl.DataFrame:
         """Get statistics on all the tasks."""
