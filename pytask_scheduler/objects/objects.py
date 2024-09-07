@@ -1,7 +1,7 @@
 import polars as pl
 import win32com.client
 from typing import Literal
-from datetime import datetime
+from datetime import datetime, timedelta
 from pytask_scheduler import (
     TaskActionTypes,
     TaskTriggerTypes,
@@ -9,8 +9,8 @@ from pytask_scheduler import (
     TaskLogonTypes
 )
 
-class TaskFrame(pl.DataFrame):
-    """Data frame for tasks."""
+class TasksDataFrame(pl.DataFrame):
+    """Data frame for scheduled tasks."""
     def __init__(self, data: pl.DataFrame):
         super().__init__(data)
         self.df = data
@@ -30,17 +30,122 @@ class TaskFrame(pl.DataFrame):
         return pl.DataFrame(stats_schema)
 
     def total_number_of_tasks(self):
-        """Counts the total number of tasks."""
+        """Total number of scheduled tasks, this will include disabled tasks."""
         return self.df.shape[0]
 
     def total_number_of_missed_runs(self):
-        """Counts the total number of missed runs."""
+        """Total number of missed runs."""
         return self.df["number_of_missed_runs"].sum()
 
-    def total_number_of_tasks_by_state(self, state: int):
-        """Counts the total number of tasks by state."""
-        return self.df.filter(pl.col("task_state")==state).shape[0]
+    def total_number_of_tasks_by_state(self, task_state: Literal[0,1,2,3,4]):
+        """Total number of scheduled tasks filtered by the task state."""
+        return self.df.filter(pl.col("task_state")==task_state).shape[0]
     
+    def get_tasks_completed_today(self):
+        """Get the scheduled tasks that were completed today."""
+        todays_date = datetime.today().date()
+        current_datetime = datetime.now()
+        df = (self.df
+            .filter(
+                pl.col("last_run_time")
+                .cast(pl.Datetime)
+                .is_between(todays_date,current_datetime)
+            )
+            .sort("last_run_time", descending=True)
+        )
+        return TasksDataFrame(df)
+    
+    def get_tasks_due_today(self):
+        """Get the tasks that are due to execute today."""
+        MAX_HOUR = 23
+        MAX_MIN = 59
+        MAX_SEC = 59
+        MAX_MSEC = 999999
+
+        current_dt = datetime.now()
+
+        lower_date = current_dt
+
+        thour = lower_date.hour
+        tmin = lower_date.minute
+        tsec = lower_date.second
+        tmsec = lower_date.microsecond
+
+        upper_date = (current_dt.date() +
+            timedelta(
+                hours=MAX_HOUR-thour,
+                minutes=MAX_MIN-tmin,
+                seconds=MAX_SEC-tsec,
+                microseconds=MAX_MSEC-tmsec
+            )
+        )
+
+        df = (self.df
+            .filter(
+                pl.col("next_run_time")
+                .cast(pl.Datetime)
+                .is_between(
+                    lower_date,
+                    upper_date
+                )
+            )
+            .sort("next_run_time")
+        )
+
+        return TasksDataFrame(df)
+
+class HistoryDataFrame(pl.DataFrame):
+    """Data frame for the task history."""
+    def __init__(self, data: pl.DataFrame):
+        super().__init__(data)
+        self.df = data
+
+    def preprocess(self):
+        """Preprocessing for the historical data frame."""
+        df = (self.df
+            .rename({
+                "event_created_time":"Event Created",
+                "event_level":"Event Level",
+                "event_id":"Event ID",
+                "task_name":"Task Name",
+                "event_id_description":"Event ID Description",
+                "event_log_description":"Event Log Description"
+            }) 
+            .with_columns(
+                pl.col("Event Created")
+                .str.strptime(pl.Datetime,"%Y-%m-%d %H:%M:%S%.6f")
+                .name.keep(),
+                pl.col("Event Level").cast(pl.Int64),
+                pl.col("Event ID").cast(pl.Int64),
+                pl.col("Task Name").str.split("\\").list.last().name.keep()
+            )
+        )
+        return HistoryDataFrame(df)
+
+    def get_todays_history(self):
+        """Filter the history data frame based on today's date."""
+        df = self.df.filter(
+            pl.col("Event Created").cast(pl.Date)==datetime.now().date()
+        ).sort("Event Created", descending=True)
+        return HistoryDataFrame(df)
+
+    def __event_count_by_criteria(self, filter_col: str, filter_criteria: str) -> int:
+        """Counts the number of events based on the filter column and criteria."""
+        return self.df.filter(pl.col(filter_col)==filter_criteria).shape[0]
+
+    def information_event_count(self) -> int:
+        """Returns the count of information events."""
+        return self.__event_count_by_criteria("Event Log Description","INFORMATION")
+
+    def error_event_count(self) -> int:
+        """Returns the count of error events."""
+        return self.__event_count_by_criteria("Event Log Description","ERROR")
+
+    def warning_event_count(self) -> int:
+        """Returns the count of warning events."""
+        return self.__event_count_by_criteria("Event Log Description","WARNING")
+
+
 class TaskScheduler:
     """
     Task Scheduler object.
@@ -111,7 +216,7 @@ class TaskScheduler:
         tasks_info_list = []
         self.__list_tasks_info_in_folder(root_folder, "\\", tasks_info_list)
         df = pl.DataFrame(tasks_info_list)
-        return TaskFrame(df)
+        return TasksDataFrame(df)
 
     def create_task(
         self,

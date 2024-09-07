@@ -1,4 +1,12 @@
-from .objects import NewTask, TaskTrigger, TaskAction, TaskFolder, TaskScheduler, TaskFrame
+from .objects import (
+    NewTask,
+    TaskTrigger,
+    TaskAction,
+    TaskFolder,
+    TaskScheduler,
+    TasksDataFrame,
+    HistoryDataFrame
+)
 
 __all__ = [
     "NewTask",
@@ -6,5 +14,6 @@ __all__ = [
     "TaskAction",
     "TaskFolder",
     "TaskScheduler",
-    "TaskFrame"
+    "TasksDataFrame",
+    "HistoryDataFrame"
 ]

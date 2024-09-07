@@ -12,7 +12,7 @@ from pytask_scheduler.constants import (
     EventLogType
 )
 
-from pytask_scheduler.objects import TaskScheduler, TaskFrame
+from pytask_scheduler.objects import TaskScheduler, TasksDataFrame, HistoryDataFrame
 
 from pytask_scheduler.functions import get_task_scheduler_history
 
@@ -27,7 +27,8 @@ __all__ = [
     "TaskExecutionLimit",
     "TaskInstancePolicy",
     "TaskScheduler",
-    "TaskFrame",
+    "TasksDataFrame",
+    "HistoryDataFrame",
     "EventIDs",
     "EventLogType",
     "get_task_scheduler_history"
