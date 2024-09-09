@@ -162,7 +162,6 @@ class HistoryDataFrame(pl.DataFrame):
         """Returns the count of warning events."""
         return self.__event_count_by_criteria("Event Log Description","WARNING")
 
-
 class TaskScheduler:
     """
     Task Scheduler object.
@@ -448,7 +447,6 @@ class RegisteredTask:
         """
         self.reg_info.Description = task_description
         return self.taskdef
-
 
 class TaskAction:
     """This object covers topics from the Action scripting object.
