@@ -18,17 +18,54 @@ class TasksDataFrame(pl.DataFrame):
 
     def preprocess(self):
         """Preprocess the tasks data frame."""
-        df = self.df.with_columns(
-            pl.col("task_state")
-            .cast(str)
-            .replace(TaskValueDefinitions.TASK_STATE_DEFINITION)
-            .alias("task_state_definition"),
-            pl.col("last_task_result")
-            .cast(str)
-            .replace(TaskValueDefinitions.TASK_RESULT_DEFINITION)
-            .alias("last_task_result_definition"),
-            pl.col("next_run_time").cast(pl.Datetime),
-            pl.col("last_run_time").cast(pl.Datetime)
+        df = (self.df
+            .with_columns(
+                pl.col("task_state")
+                .cast(str)
+                .replace(TaskValueDefinitions.TASK_STATE_DEFINITION)
+                .alias("task_state_definition"),
+                pl.col("last_task_result")
+                .cast(str)
+                .replace(TaskValueDefinitions.TASK_RESULT_DEFINITION)
+                .alias("last_task_result_definition"),
+                pl.col("next_run_time").cast(pl.Datetime),
+                pl.col("last_run_time").cast(pl.Datetime),
+                pl.col("task_path").str.split("\\").alias("task_folder_name")
+            )
+            .with_columns(
+                pl.when(pl.col("task_folder_name").list.len() <= 2)
+                .then(pl.lit("\\"))
+                .otherwise(pl.col("task_folder_name").list.slice(1,2).list.first())
+                .name.keep()
+            )
+            .select(
+                [
+                    'task_source',
+                    'task_path',
+                    'task_folder_name',
+                    'name',
+                    'task_description',
+                    'enabled',
+                    'task_state',
+                    'task_state_definition',
+                    'next_run_time',
+                    'last_run_time',
+                    'last_task_result',
+                    'last_task_result_definition',
+                    'number_of_missed_runs',
+                    'author',
+                    'registration_date',
+                    'execution_path',
+                    'AllowDemandStart',
+                    'StartWhenAvailable',
+                    'Enabled',
+                    'Hidden',
+                    'RestartInterval',
+                    'RestartCount',
+                    'ExecutionTimeLimit',
+                    'MultipleInstances'
+                ]
+            )
         )
         return TasksDataFrame(df)
 
@@ -232,7 +269,8 @@ class TaskScheduler:
         tasks_info_list = []
         self.__list_tasks_info_in_folder(root_folder, "\\", tasks_info_list)
         df = pl.DataFrame(tasks_info_list)
-        return TasksDataFrame(df)
+        df = TasksDataFrame(df).preprocess()
+        return df
 
     def create_task(
         self,
